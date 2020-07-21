@@ -6,16 +6,17 @@ import jwt from 'jsonwebtoken'
 class User{
 
 async autentic(request: Request,response: Response){
+    //console.log('[DEBUG] USER ROTA',request.body.email_user)  
     const {
         email_user,
         senha_user,      
     } = request.body;
-const user = await knex('user').select('*').where('id_user', 12)
-console.log(user);
+const user = await knex('user').select('*').where('email_user',request.body.email_user)
 if(user.length == 1){
-
+   // console.log(user.length);
 if(await bcrypt.compare(senha_user, user[0].senha_user)){
-const token = jwt.sign({id: user[0].id_user}, process.env.APP_SECRET, {
+    // console.log(user[0].senha_user);
+const token = jwt.sign({id: user[0].id_user}, String(process.env.APP_SECRET), {
     expiresIn: '1d'
 })
 const data ={
@@ -58,7 +59,7 @@ const ativos = await knex('ativo')
 
 
     async create(request: Request,response: Response){
-       //console.log('[DEBUG] USER ROTA',request)     
+    //    console.log('[DEBUG] USER ROTA',request)     
       
        const {
             name_user,
